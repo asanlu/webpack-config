@@ -1,5 +1,9 @@
+@import 'b';
+@import 'c.css';
+
 .a{
     .a-1 {
         font-size: 100px;
+        box-sizing: border-box;
     }
 }

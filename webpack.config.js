@@ -1,34 +1,32 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+// const glob = require('glob')
 
 module.exports = {
   devtool: 'eval-source-map',
-  entry: './src/index.js', //入口文件，src下的index.js
+  // entry: './src/index.js', // 入口文件 单入口 string/array，多入口object
+  entry: {
+    index: './src/index.js',
+    test: './src/b.js'
+  },
   output: {
     path: path.join(__dirname, 'dist'), // 出口目录，dist文件
-    filename: '[name].[hash].js', //这里name就是打包出来的文件名，因为是单入口，就是main，多入口下回分解
+    filename: '[name].[hash].js', // name是entry入口的key值，单入口就是main
     publicPath: '/'      // 同时要处理打包图片路径问题，
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: ['babel-loader'],
-        include: path.join(__dirname, 'src'), //限制范围，提高打包速度
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/,
+        test: /\.scss$/,
         // use: ExtractTextPlugin.extract({
         //   fallback: 'style-loader',
-        //   // use: ['css-loader', 'postcss-loader', 'sass-loader']
         //   use: ['css-loader', 'postcss-loader', 'sass-loader']
         // }),
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
         include: path.join(__dirname, 'src'), //限制范围，提高打包速度
         exclude: /node_modules/
       },
@@ -41,7 +39,18 @@ module.exports = {
             limit: 5 * 1024
           }
         }
-      }
+      },
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env'] // 转es6 
+          }
+        },
+        include: path.join(__dirname, 'src'), //限制范围，提高打包速度
+        exclude: /node_modules/
+      },
     ]
   },
   resolve: {
@@ -53,15 +62,6 @@ module.exports = {
     // }
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'index.html'),
-      filename: 'index.html',
-      // hash: true,//防止缓存
-      // minify: { // html压缩
-      //   removeAttributeQuotes: true//压缩 去掉引号
-      // }
-    }),
-
     // 抽离css做单独文件
     // new ExtractTextPlugin({
     //   // filename: 'static/css/[name].[hash].css' //放到dist/css/下
@@ -72,8 +72,29 @@ module.exports = {
       // both options are optional
       // filename: devMode ? '[name].css' : '[name].[hash].css',
       // chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
-      filename: 'test.css',
+      filename: '[name].[hash].css',
       chunkFilename: '[id].[hash].css'
+    }),
+
+    //  设置html模版，让入口js加载到相应的html里
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './src/view/index.html'),
+      filename: 'index.html',
+      chunks: ['index'],
+      // hash: true,//防止缓存
+      // minify: { // html压缩
+      //   removeAttributeQuotes: true//压缩 去掉引号
+      // }
+    }),
+
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './src/view/test.html'),
+      filename: 'test.html',
+      chunks: ['test'],
+      // hash: true,//防止缓存
+      // minify: { // html压缩
+      //   removeAttributeQuotes: true//压缩 去掉引号
+      // }
     }),
 
     // 复制静态资源
@@ -86,7 +107,7 @@ module.exports = {
     ]),
 
     // 清空打包输出目录
-    // new CleanWebpackPlugin([path.join(__dirname, 'dist')])
+    new CleanWebpackPlugin([path.join(__dirname, 'dist')])
   ],
   devServer: {
     contentBase: path.join(__dirname, "dist"), //静态文件根目录
