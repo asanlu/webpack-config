@@ -53,6 +53,29 @@ module.exports = {
       },
     ]
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'initial',    // all, async, initial 三选一, 插件作用的chunks范围
+      cacheGroups: {
+        // split `node_modules`目录下被打包的代码到 `page/vendor.js && .css` 没找到可打包文件的话，则没有
+        // vendor: {
+        //   test: /node_modules\//,
+        //   name: 'vendor',
+        //   priority: 10,
+        //   enforce: true
+        // },
+        // split `common`和`components`目录下被打包的代码到`page/commons.js && .css`
+        commons: {
+          // test: /common\/|components\//,
+          minSize: 0,           // 最小尺寸 
+          minChunks: 2,         // 最小chunks
+          // maxAsyncRequests： 5 // 最大异步请求chunks
+          maxInitialRequests: 5, // 最大初始化chunks
+          name: 'common'
+        }
+      }
+    }
+  },
   resolve: {
     extensions: ['.js', '.json', '.scss'],
     // 配置别名可以加快webpack查找模块的速度
@@ -80,7 +103,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/view/index.html'),
       filename: 'index.html',
-      chunks: ['index'],
+      chunks: ['index', 'common'],
       // hash: true,//防止缓存
       // minify: { // html压缩
       //   removeAttributeQuotes: true//压缩 去掉引号
@@ -90,11 +113,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/view/test.html'),
       filename: 'test.html',
-      chunks: ['test'],
-      // hash: true,//防止缓存
-      // minify: { // html压缩
-      //   removeAttributeQuotes: true//压缩 去掉引号
-      // }
+      chunks: ['test', 'common'],
     }),
 
     // 复制静态资源
