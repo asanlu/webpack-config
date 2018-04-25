@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -27,7 +28,7 @@ module.exports = {
         //   use: ['css-loader', 'postcss-loader', 'sass-loader']
         // }),
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
-        include: path.join(__dirname, 'src'), //限制范围，提高打包速度
+        include: path.join(__dirname, 'src'), //限制范围，提高打包速度0
         exclude: /node_modules/
       },
       {
@@ -85,6 +86,14 @@ module.exports = {
     // }
   },
   plugins: [
+    // 热加载
+    // new webpack.HotModuleReplacementPlugin(),
+    // 暴露全局变量
+    new webpack.ProvidePlugin({
+      '$': 'jquery',
+      jQuery: "jquery"
+    }),
+
     // 抽离css做单独文件
     // new ExtractTextPlugin({
     //   // filename: 'static/css/[name].[hash].css' //放到dist/css/下
