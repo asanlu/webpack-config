@@ -31,6 +31,7 @@ module.exports = {
           loader: 'url-loader',
           options: {
             outputPath: 'static/images/',  // 图片输出的路径
+            // publicPath: '/static/images/',
             limit: 5 * 1024                // 限制打包范围
           }
         }
@@ -74,8 +75,7 @@ module.exports = {
       // both options are optional
       // filename: devMode ? '[name].css' : '[name].[hash].css',
       // chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
-      filename: '[name].[hash].css',
-      chunkFilename: '[id].[hash].css'
+      filename: 'global.[hash].css',
     }),
 
     //  设置html模版，让入口js加载到相应的html里

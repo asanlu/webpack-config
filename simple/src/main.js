@@ -1,7 +1,7 @@
 import './scss/a'
 
 // 写jq
-$('.jqueyr-test').click(() => {
+$('.jquery-test').click(() => {
   console.log('jq操作');
   console.log($(this));
 });
