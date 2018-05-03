@@ -16,7 +16,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'dist'), // 出口目录，dist文件
-    filename: '[name].[hash].js', // name是entry入口的key值，单入口就是main
+    filename: 'static/js/[name].[hash].js', // name是entry入口的key值，单入口就是main
     publicPath: '/'      // 同时要处理打包图片路径问题，
   },
   module: {
@@ -46,7 +46,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env'] // 转es6 
+            presets: ['env'] // 转es6
           }
         },
         include: path.join(__dirname, 'src'), //限制范围，提高打包速度
@@ -68,7 +68,7 @@ module.exports = {
         // split `common`和`components`目录下被打包的代码到`page/commons.js && .css`
         commons: {
           // test: /common\/|components\//,
-          minSize: 0,           // 最小尺寸 
+          minSize: 0,           // 最小尺寸
           minChunks: 2,         // 最小chunks
           // maxAsyncRequests： 5 // 最大异步请求chunks
           maxInitialRequests: 5, // 最大初始化chunks
@@ -104,7 +104,7 @@ module.exports = {
       // both options are optional
       // filename: devMode ? '[name].css' : '[name].[hash].css',
       // chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
-      filename: '[name].[hash].css',
+      filename: 'static/file/[name].[hash].css',
       chunkFilename: '[id].[hash].css'
     }),
 
