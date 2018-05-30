@@ -13,7 +13,7 @@ module.exports = {
   // 输出文件
   output: {
     path: path.join(__dirname, 'dist'), // 出口目录，dist文件
-    filename: '[name].[hash].js',       // name是entry入口的key值，单入口就是main
+    filename: 'static/js/[name].[hash].js',       // name是entry入口的key值，单入口就是main
     publicPath: '/'                     // 同时要处理打包图片路径问题，
   },
 
@@ -30,7 +30,7 @@ module.exports = {
         use: {
           loader: 'url-loader',
           options: {
-            outputPath: 'static/images/',  // 图片输出的路径
+            outputPath: 'static/img/',  // 图片输出的路径
             // publicPath: '/static/images/',
             limit: 5 * 1024                // 限制打包范围
           }
@@ -75,7 +75,7 @@ module.exports = {
       // both options are optional
       // filename: devMode ? '[name].css' : '[name].[hash].css',
       // chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
-      filename: 'global.[hash].css',
+      filename: 'static/css/global.[hash].css',
     }),
 
     //  设置html模版，让入口js加载到相应的html里
