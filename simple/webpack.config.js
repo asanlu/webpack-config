@@ -5,6 +5,20 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
+// 获取html-webpack-plugin参数的方法
+var getHtmlConfig = function (name, title) {
+  return {
+    template: './src/views/' + name + '.html',
+    filename: name + '.html',
+    // favicon: './favicon.ico',
+    title: title,
+    // inject: true,
+    // hash: true,
+    // chunks: ['common', name]
+  };
+};
+
+
 module.exports = {
 
   // 入口文件，单入口是string/array,多入口为object
@@ -20,10 +34,30 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env']  // 转es6 
+          }
+        },
+        include: path.join(__dirname, 'src'), // 限制范围，提高打包速度
+        exclude: /node_modules/
+      },
+      {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'], // 从右往左执行
         include: path.join(__dirname, 'src'),   //限制范围，提高打包速度0
         exclude: /node_modules/
+      },
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader',    // 处理html图片路径打包
+          // options: {
+          //   attrs: [':data-src']
+          // }
+        }
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg)/,
@@ -35,17 +69,6 @@ module.exports = {
             limit: 5 * 1024                // 限制打包范围
           }
         }
-      },
-      {
-        test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['env']  // 转es6 
-          }
-        },
-        include: path.join(__dirname, 'src'), // 限制范围，提高打包速度
-        exclude: /node_modules/
       },
     ]
   },
@@ -79,15 +102,17 @@ module.exports = {
     }),
 
     //  设置html模版，让入口js加载到相应的html里
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './index.html'),
-      filename: 'index.html',
+    // new HtmlWebpackPlugin({
+    //   template: path.resolve(__dirname, './index.html'),
+    //   filename: 'index.html',
       // chunks: ['index', 'common'],
       // hash: true,//防止缓存
       // minify: { // html压缩
       //   removeAttributeQuotes: true//压缩 去掉引号
       // }
-    }),
+    // }),
+    new HtmlWebpackPlugin(getHtmlConfig('index', '首页')),
+    new HtmlWebpackPlugin(getHtmlConfig('login', '登录')),
 
     // 复制静态资源
     new CopyWebpackPlugin([
